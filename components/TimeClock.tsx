@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Branch, Employee } from '../types';
 import CameraCapture from './CameraCapture';
@@ -65,7 +64,7 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
   return (
     <div className="p-6 h-full flex flex-col">
       <div className="flex-shrink-0 mb-4">
-        <button onClick={onBack} className="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">&larr; Back to Home</button>
+        <button onClick={onBack} className="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold">&larr; Back to Home</button>
         <h2 className="text-2xl font-bold text-center mt-2 text-gray-800 dark:text-white">⏰ Time In / Time Out</h2>
         <p className="text-center text-gray-500 dark:text-gray-400">Branch: {branch.name}</p>
       </div>
@@ -75,7 +74,7 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
           
           <div>
             <label htmlFor="employee" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Your Name</label>
-            {isFetchingEmployees ? <LoadingSpinner/> : (
+            {isFetchingEmployees ? <div className="mt-2"><LoadingSpinner/></div> : (
                 <select
                 id="employee"
                 value={selectedEmployeeId}
@@ -90,13 +89,13 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
             )}
           </div>
           
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          {success && <p className="text-green-500 text-sm text-center">{success}</p>}
+          {error && <p className="text-red-500 text-sm text-center font-semibold">{error}</p>}
+          {success && <p className="text-green-500 text-sm text-center font-semibold">{success}</p>}
           
           <button
             onClick={handleSubmit}
             disabled={!selectedEmployeeId || !photo || loading}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:from-gray-400 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
           >
             {loading ? <LoadingSpinner /> : 'Submit'}
           </button>

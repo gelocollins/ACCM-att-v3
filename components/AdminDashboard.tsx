@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Branch, AttendanceRecord } from '../types';
 import { getAttendanceRecords } from '../services/supabase';
@@ -68,20 +67,20 @@ const AdminDashboard: React.FC<Props> = ({ branch, onBack }) => {
 
   const PhotoDisplay: React.FC<{ url: string | null; time: string | null; label: string }> = ({ url, time, label }) => (
     <div className="flex-1 text-center">
-      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{label}</p>
+      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{label}</p>
       {url ? (
-        <img src={url} alt={label} className="w-16 h-16 object-cover rounded-md mx-auto mt-1 shadow-md" />
+        <img src={url} alt={label} className="w-20 h-20 object-cover rounded-lg mx-auto mt-1 shadow-md" />
       ) : (
-        <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-md mx-auto mt-1 flex items-center justify-center text-gray-400">-</div>
+        <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700/50 rounded-lg mx-auto mt-1 flex items-center justify-center text-gray-400">-</div>
       )}
-      <p className="text-sm font-medium mt-1">{formatTime(time)}</p>
+      <p className="text-sm font-semibold mt-2">{formatTime(time)}</p>
     </div>
   );
 
   return (
     <div className="p-4 sm:p-6 h-full flex flex-col">
       <div className="flex-shrink-0 mb-4">
-        <button onClick={onBack} className="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">&larr; Back to Home</button>
+        <button onClick={onBack} className="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold">&larr; Back to Home</button>
         <h2 className="text-2xl font-bold text-center mt-2 text-gray-800 dark:text-white">📊 Admin Dashboard</h2>
         <p className="text-center text-gray-500 dark:text-gray-400">Attendance for {branch.name}</p>
         
@@ -110,7 +109,7 @@ const AdminDashboard: React.FC<Props> = ({ branch, onBack }) => {
         </div>
       </div>
       
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto pr-2">
         {loading && <div className="flex justify-center items-center h-full"><LoadingSpinner /></div>}
         {error && <div className="text-center text-red-500 mt-4">{error}</div>}
         {!loading && !error && (
@@ -120,16 +119,16 @@ const AdminDashboard: React.FC<Props> = ({ branch, onBack }) => {
             </p>
           ) : (
             <div className="space-y-4">
-              {filteredRecords.map(record => (
-                <div key={record.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                  <div className="flex-shrink-0 text-center w-24">
-                     <img src={record.employee.registration_photo} alt="Registration" className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-indigo-400" />
-                     <h3 className="font-bold text-md mt-2 truncate" title={record.employee.name}>{record.employee.name}</h3>
-                     <p className="text-sm text-gray-600 dark:text-gray-300 font-mono bg-indigo-100 dark:bg-indigo-900 rounded px-1">{calculateHours(record.time_in, record.time_out)}</p>
+              {filteredRecords.map((record, index) => (
+                <div key={record.id} className="fade-in-up bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl shadow-md flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4" style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}>
+                  <div className="flex-shrink-0 text-center w-32">
+                     <img src={record.employee.registration_photo} alt="Registration" className="w-20 h-20 object-cover rounded-full mx-auto border-4 border-indigo-400 shadow-lg" />
+                     <h3 className="font-bold text-lg mt-2 truncate" title={record.employee.name}>{record.employee.name}</h3>
+                     <p className="text-sm text-gray-600 dark:text-gray-300 font-mono bg-indigo-100 dark:bg-indigo-900/50 rounded-full px-2 py-0.5 inline-block">{calculateHours(record.time_in, record.time_out)}</p>
                   </div>
-                  <div className="w-full flex justify-around items-center">
+                  <div className="w-full flex justify-around items-center bg-gray-100 dark:bg-gray-900/40 p-3 rounded-lg">
                     <PhotoDisplay url={record.time_in_photo} time={record.time_in} label="Time In" />
-                    <div className="text-gray-300 dark:text-gray-500">&rarr;</div>
+                    <div className="text-3xl text-gray-300 dark:text-gray-500 font-light">&rarr;</div>
                     <PhotoDisplay url={record.time_out_photo} time={record.time_out} label="Time Out" />
                   </div>
                 </div>

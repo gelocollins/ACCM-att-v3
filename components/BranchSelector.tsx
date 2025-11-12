@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { getBranches } from '../services/supabase';
 import { Branch } from '../types';
@@ -34,13 +33,14 @@ const BranchSelector: React.FC<Props> = ({ onSelect }) => {
 
   return (
     <div className="p-8 flex flex-col items-center justify-center h-full">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">Welcome! Please select your branch.</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Welcome! Please select your branch.</h2>
       <div className="w-full max-w-sm space-y-3">
-        {branches.map((branch) => (
+        {branches.map((branch, index) => (
           <button
             key={branch.id}
             onClick={() => onSelect(branch)}
-            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 text-left"
+            className="fade-in-up w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1 text-left text-lg"
+            style={{ animationDelay: `${index * 100}ms`, opacity: 0 }}
           >
             {branch.name}
           </button>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 
 interface Props {
@@ -14,7 +13,6 @@ const PasswordPrompt: React.FC<Props> = ({ onSuccess, onCancel }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Focus the input field when the component mounts
     inputRef.current?.focus();
   }, []);
 
@@ -31,12 +29,12 @@ const PasswordPrompt: React.FC<Props> = ({ onSuccess, onCancel }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 fade-in"
       onClick={onCancel}
     >
       <div 
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 w-full max-w-sm m-4"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-sm m-4 fade-in-up"
+        onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Admin Access Required</h2>
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -61,13 +59,13 @@ const PasswordPrompt: React.FC<Props> = ({ onSuccess, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
             >
               Submit
             </button>

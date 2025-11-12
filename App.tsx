@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { AppView, Branch } from './types';
 import BranchSelector from './components/BranchSelector';
@@ -8,19 +7,34 @@ import AdminDashboard from './components/AdminDashboard';
 import PasswordPrompt from './components/PasswordPrompt';
 
 const Home = ({ onNavigate, branch }: { onNavigate: (view: AppView) => void, branch: Branch }) => (
-  <div className="p-6 flex flex-col items-center justify-center h-full">
-    <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">Attendance System</h1>
-    <p className="text-center text-gray-500 dark:text-gray-400 mt-2 mb-8">Selected Branch: <span className="font-semibold">{branch.name}</span></p>
+  <div className="p-6 flex flex-col items-center justify-center h-full text-center">
+    <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white tracking-tight">Welcome to ACCM</h1>
+    <p className="text-gray-500 dark:text-gray-400 mt-2 mb-10">Branch: <span className="font-semibold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-1 rounded-md">{branch.name}</span></p>
     
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md">
-      <button onClick={() => onNavigate('REGISTER')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
-        👤 Register
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
+       <button 
+        onClick={() => onNavigate('REGISTER')} 
+        className="fade-in-up bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl text-lg flex items-center justify-center gap-2"
+        style={{ animationDelay: '100ms' }}
+      >
+        <span>👤</span>
+        <span>Register</span>
       </button>
-      <button onClick={() => onNavigate('TIME_CLOCK')} className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
-        ⏰ Time In/Out
+      <button 
+        onClick={() => onNavigate('TIME_CLOCK')} 
+        className="fade-in-up bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl text-lg flex items-center justify-center gap-2"
+        style={{ animationDelay: '200ms' }}
+      >
+        <span>⏰</span>
+        <span>Time In/Out</span>
       </button>
-      <button onClick={() => onNavigate('ADMIN')} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 col-span-1 sm:col-span-2 text-lg">
-        📊 Admin View
+      <button 
+        onClick={() => onNavigate('ADMIN')} 
+        className="fade-in-up bg-gradient-to-r from-purple-500 to-violet-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl col-span-1 sm:col-span-2 text-lg flex items-center justify-center gap-2"
+        style={{ animationDelay: '300ms' }}
+      >
+        <span>📊</span>
+        <span>Admin View</span>
       </button>
     </div>
   </div>
@@ -76,18 +90,20 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
-      <header className="bg-white dark:bg-gray-800 shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800 dark:text-white">🏢 Photo Clock</h1>
+    <div className="min-h-screen bg-transparent flex flex-col">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+        <h1 className="text-xl font-bold text-gray-800 dark:text-white">🏢 ACCM Attendance</h1>
         {selectedBranch && (
-          <button onClick={reset} className="text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-1 px-3 rounded-md transition">
+          <button onClick={reset} className="text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-1 px-3 rounded-lg transition-colors">
             Change Branch
           </button>
         )}
       </header>
       <main className="flex-grow container mx-auto p-4 sm:p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl h-full overflow-hidden">
-            {renderContent()}
+        <div className="bg-white dark:bg-gray-800/90 rounded-2xl shadow-2xl h-full overflow-hidden backdrop-blur-lg">
+            <div key={view} className="fade-in h-full">
+              {renderContent()}
+            </div>
         </div>
       </main>
       {isPasswordPromptVisible && (
