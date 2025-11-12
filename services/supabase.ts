@@ -6,17 +6,14 @@ const supabaseUrl = 'https://yjytufyujhlydjxbccry.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqeXR1Znl1amhseWRqeGJjY3J5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NDMxODMsImV4cCI6MjA3ODUxOTE4M30.5VQIXROWtO4TMSjZfnePbTMRN4oRvGAh13jE9Xuq3t8';
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Hardcoded branches for simplicity
-const branches: Branch[] = [
-    { id: '1d6f4c58-4b71-44b8-80e5-2b0717b07e54', name: 'Headquarters 🏢' },
-    { id: '8a9c441a-1d13-4687-9b2e-9d22b2f69e71', name: 'Downtown Branch 🏙️' },
-    { id: 'f5c4a5c6-7a7d-4b8c-8c8e-6e2c2f2a2e2d', name: 'Westside Outlet 🏪' },
-];
-
 export const getBranches = async (): Promise<Branch[]> => {
-    // In a real app, you would fetch from the 'branches' table.
-    // For this example, we return the hardcoded list.
-    return Promise.resolve(branches);
+    const { data, error } = await supabase
+        .from('branches')
+        .select('*')
+        .order('name');
+        
+    if (error) throw error;
+    return data;
 };
 
 export const addEmployee = async (name: string, photoDataUrl: string, branchId: string): Promise<void> => {
