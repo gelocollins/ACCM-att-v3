@@ -121,8 +121,7 @@ export const addTimeOut = async (attendanceId: string, employeeId: string, photo
 };
 
 
-export const getAttendanceRecords = async (branchId: string): Promise<AttendanceRecord[]> => {
-    const today = new Date().toISOString().slice(0, 10);
+export const getAttendanceRecords = async (branchId: string, date: string): Promise<AttendanceRecord[]> => {
     const { data, error } = await supabase
         .from('attendance')
         .select(`
@@ -138,7 +137,7 @@ export const getAttendanceRecords = async (branchId: string): Promise<Attendance
             )
         `)
         .eq('branch_id', branchId)
-        .eq('date', today)
+        .eq('date', date)
         .order('time_in', { ascending: false });
 
     if (error) throw error;

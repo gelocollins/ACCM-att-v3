@@ -5,20 +5,21 @@ import BranchSelector from './components/BranchSelector';
 import RegisterEmployee from './components/RegisterEmployee';
 import TimeClock from './components/TimeClock';
 import AdminDashboard from './components/AdminDashboard';
+import PasswordPrompt from './components/PasswordPrompt';
 
-const Home = ({ setView, branch }: { setView: (view: AppView) => void, branch: Branch }) => (
+const Home = ({ onNavigate, branch }: { onNavigate: (view: AppView) => void, branch: Branch }) => (
   <div className="p-6 flex flex-col items-center justify-center h-full">
     <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">Attendance System</h1>
     <p className="text-center text-gray-500 dark:text-gray-400 mt-2 mb-8">Selected Branch: <span className="font-semibold">{branch.name}</span></p>
     
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md">
-      <button onClick={() => setView('REGISTER')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
+      <button onClick={() => onNavigate('REGISTER')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
         👤 Register
       </button>
-      <button onClick={() => setView('TIME_CLOCK')} className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
+      <button onClick={() => onNavigate('TIME_CLOCK')} className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-lg">
         ⏰ Time In/Out
       </button>
-      <button onClick={() => setView('ADMIN')} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 col-span-1 sm:col-span-2 text-lg">
+      <button onClick={() => onNavigate('ADMIN')} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 col-span-1 sm:col-span-2 text-lg">
         📊 Admin View
       </button>
     </div>
@@ -28,6 +29,7 @@ const Home = ({ setView, branch }: { setView: (view: AppView) => void, branch: B
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('BRANCH_SELECT');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+  const [isPasswordPromptVisible, setIsPasswordPromptVisible] = useState(false);
 
   const handleBranchSelect = useCallback((branch: Branch) => {
     setSelectedBranch(branch);
@@ -41,6 +43,19 @@ const App: React.FC = () => {
   
   const goHome = useCallback(() => setView('HOME'), []);
 
+  const handleNavigation = (targetView: AppView) => {
+    if (targetView === 'ADMIN') {
+      setIsPasswordPromptVisible(true);
+    } else {
+      setView(targetView);
+    }
+  };
+
+  const handlePasswordSuccess = () => {
+    setIsPasswordPromptVisible(false);
+    setView('ADMIN');
+  };
+
   const renderContent = () => {
     if (!selectedBranch || view === 'BRANCH_SELECT') {
       return <BranchSelector onSelect={handleBranchSelect} />;
@@ -48,7 +63,7 @@ const App: React.FC = () => {
 
     switch (view) {
       case 'HOME':
-        return <Home setView={setView} branch={selectedBranch} />;
+        return <Home onNavigate={handleNavigation} branch={selectedBranch} />;
       case 'REGISTER':
         return <RegisterEmployee branch={selectedBranch} onBack={goHome} />;
       case 'TIME_CLOCK':
@@ -75,6 +90,12 @@ const App: React.FC = () => {
             {renderContent()}
         </div>
       </main>
+      {isPasswordPromptVisible && (
+        <PasswordPrompt 
+          onSuccess={handlePasswordSuccess}
+          onCancel={() => setIsPasswordPromptVisible(false)}
+        />
+      )}
     </div>
   );
 };
