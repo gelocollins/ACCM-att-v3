@@ -123,14 +123,14 @@ const AdminDashboard: React.FC<Props> = ({ branch, onBack }) => {
               {filteredRecords.map(record => (
                 <div key={record.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <div className="flex-shrink-0 text-center w-24">
-                     <img src={record.employee.registration_photo_url} alt="Registration" className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-indigo-400" />
+                     <img src={record.employee.registration_photo} alt="Registration" className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-indigo-400" />
                      <h3 className="font-bold text-md mt-2 truncate" title={record.employee.name}>{record.employee.name}</h3>
                      <p className="text-sm text-gray-600 dark:text-gray-300 font-mono bg-indigo-100 dark:bg-indigo-900 rounded px-1">{calculateHours(record.time_in, record.time_out)}</p>
                   </div>
                   <div className="w-full flex justify-around items-center">
-                    <PhotoDisplay url={record.time_in_photo_url} time={record.time_in} label="Time In" />
+                    <PhotoDisplay url={record.time_in_photo} time={record.time_in} label="Time In" />
                     <div className="text-gray-300 dark:text-gray-500">&rarr;</div>
-                    <PhotoDisplay url={record.time_out_photo_url} time={record.time_out} label="Time Out" />
+                    <PhotoDisplay url={record.time_out_photo} time={record.time_out} label="Time Out" />
                   </div>
                 </div>
               ))}

@@ -6,8 +6,6 @@ const supabaseUrl = 'https://yjytufyujhlydjxbccry.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqeXR1Znl1amhseWRqeGJjY3J5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NDMxODMsImV4cCI6MjA3ODUxOTE4M30.5VQIXROWtO4TMSjZfnePbTMRN4oRvGAh13jE9Xuq3t8';
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-const BUCKET_NAME = 'attendance-photos';
-
 // Hardcoded branches for simplicity
 const branches: Branch[] = [
     { id: '1d6f4c58-4b71-44b8-80e5-2b0717b07e54', name: 'Headquarters 🏢' },
@@ -21,48 +19,16 @@ export const getBranches = async (): Promise<Branch[]> => {
     return Promise.resolve(branches);
 };
 
-export const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    return blob;
-};
-
-const uploadPhoto = async (photoBlob: Blob, employeeId: string, type: 'registration' | 'time_in' | 'time_out'): Promise<string> => {
-    const fileName = `${employeeId}/${type}_${Date.now()}.jpeg`;
-    const { data, error } = await supabase.storage
-        .from(BUCKET_NAME)
-        .upload(fileName, photoBlob, {
-            contentType: 'image/jpeg',
-            upsert: false,
-        });
-
-    if (error) {
-        console.error('Error uploading photo:', error);
-        throw error;
-    }
-
-    const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
-    return publicUrl;
-};
-
 export const addEmployee = async (name: string, photoDataUrl: string, branchId: string): Promise<void> => {
-    const { data: newEmployee, error: insertError } = await supabase
+    const { error } = await supabase
         .from('employees')
-        .insert({ name, branch_id: branchId, registration_photo_url: 'placeholder' })
-        .select()
-        .single();
+        .insert({ 
+            name, 
+            branch_id: branchId, 
+            registration_photo: photoDataUrl 
+        });
     
-    if (insertError || !newEmployee) throw insertError || new Error("Failed to create employee record.");
-
-    const photoBlob = await dataUrlToBlob(photoDataUrl);
-    const photoUrl = await uploadPhoto(photoBlob, newEmployee.id, 'registration');
-
-    const { error: updateError } = await supabase
-        .from('employees')
-        .update({ registration_photo_url: photoUrl })
-        .eq('id', newEmployee.id);
-        
-    if (updateError) throw updateError;
+    if (error) throw error;
 };
 
 export const getEmployeesByBranch = async (branchId: string): Promise<Employee[]> => {
@@ -93,27 +59,21 @@ export const getOpenAttendance = async (employeeId: string): Promise<{ id: strin
 };
 
 export const addTimeIn = async (employeeId: string, branchId: string, photoDataUrl: string): Promise<void> => {
-    const photoBlob = await dataUrlToBlob(photoDataUrl);
-    const photoUrl = await uploadPhoto(photoBlob, employeeId, 'time_in');
-    
     const { error } = await supabase.from('attendance').insert({
         employee_id: employeeId,
         branch_id: branchId,
-        time_in_photo_url: photoUrl,
+        time_in_photo: photoDataUrl,
     });
 
     if (error) throw error;
 };
 
 export const addTimeOut = async (attendanceId: string, employeeId: string, photoDataUrl: string): Promise<void> => {
-    const photoBlob = await dataUrlToBlob(photoDataUrl);
-    const photoUrl = await uploadPhoto(photoBlob, employeeId, 'time_out');
-
     const { error } = await supabase
         .from('attendance')
         .update({
             time_out: new Date().toISOString(),
-            time_out_photo_url: photoUrl,
+            time_out_photo: photoDataUrl,
         })
         .eq('id', attendanceId);
 
@@ -127,13 +87,13 @@ export const getAttendanceRecords = async (branchId: string, date: string): Prom
         .select(`
             id,
             time_in,
-            time_in_photo_url,
+            time_in_photo,
             time_out,
-            time_out_photo_url,
+            time_out_photo,
             employee_id,
             employee:employees (
                 name,
-                registration_photo_url
+                registration_photo
             )
         `)
         .eq('branch_id', branchId)

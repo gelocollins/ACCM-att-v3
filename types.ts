@@ -7,20 +7,20 @@ export interface Branch {
 export interface Employee {
   id: string;
   name: string;
-  registration_photo_url: string;
+  registration_photo: string;
   branch_id: string;
 }
 
 export interface AttendanceRecord {
   id: string;
   time_in: string;
-  time_in_photo_url: string;
+  time_in_photo: string;
   time_out: string | null;
-  time_out_photo_url: string | null;
+  time_out_photo: string | null;
   employee_id: string;
   employee: {
       name: string;
-      registration_photo_url: string;
+      registration_photo: string;
   };
 }
 
