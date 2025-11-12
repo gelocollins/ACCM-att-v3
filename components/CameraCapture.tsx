@@ -13,7 +13,23 @@ const CameraCapture: React.FC<Props> = ({ onCapture, onClear }) => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Use a ref to hold the current stream. This prevents the `stopCamera`
+  // function from changing on every render, which was causing the useEffect loop.
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    streamRef.current = null;
+    setStream(null);
+  }, []);
+
   const startCamera = useCallback(async () => {
+    // Ensure any existing camera is stopped before starting a new one.
+    if (streamRef.current) {
+      stopCamera();
+    }
     try {
       setError(null);
       setPhoto(null);
@@ -21,7 +37,8 @@ const CameraCapture: React.FC<Props> = ({ onCapture, onClear }) => {
         video: { facingMode: 'user' },
         audio: false 
       });
-      setStream(mediaStream);
+      streamRef.current = mediaStream; // Update the ref
+      setStream(mediaStream); // Update state to trigger re-render
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
@@ -29,20 +46,15 @@ const CameraCapture: React.FC<Props> = ({ onCapture, onClear }) => {
       console.error("Camera access denied:", err);
       setError("Camera access is required. Please enable it in your browser settings.");
     }
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
-  }, [stream]);
+  }, [stopCamera]);
 
   useEffect(() => {
     startCamera();
+    // The cleanup function will be called when the component unmounts.
     return () => {
       stopCamera();
     };
+    // `startCamera` and `stopCamera` are stable, so this effect runs only once.
   }, [startCamera, stopCamera]);
   
   const capturePhoto = () => {
@@ -53,6 +65,11 @@ const CameraCapture: React.FC<Props> = ({ onCapture, onClear }) => {
       canvas.height = video.videoHeight;
       const context = canvas.getContext('2d');
       if(context){
+        // The video preview is flipped horizontally via CSS transform (-scale-x-100).
+        // To make the captured photo match the preview (what you see is what you get),
+        // we need to flip the canvas context before drawing the image.
+        context.translate(video.videoWidth, 0);
+        context.scale(-1, 1);
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         const dataUrl = canvas.toDataURL('image/jpeg');
         setPhoto(dataUrl);
