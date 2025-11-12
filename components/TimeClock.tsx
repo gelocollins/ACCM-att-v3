@@ -25,7 +25,7 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
         const data = await getEmployeesByBranch(branch.id);
         setEmployees(data);
       } catch (err) {
-        setError('Failed to load employees.');
+        setError('Failed to load employee roster.');
       } finally {
         setIsFetchingEmployees(false);
       }
@@ -35,7 +35,7 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
 
   const handleSubmit = async () => {
     if (!selectedEmployeeId || !photo) {
-      setError('Please select an employee and take a photo.');
+      setError('Please select identity and provide photo scan.');
       return;
     }
     setLoading(true);
@@ -45,10 +45,10 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
       const openAttendance = await getOpenAttendance(selectedEmployeeId);
       if (openAttendance) {
         await addTimeOut(openAttendance.id, selectedEmployeeId, photo);
-        setSuccess('Successfully timed out!');
+        setSuccess('Time-out record submitted.');
       } else {
         await addTimeIn(selectedEmployeeId, branch.id, photo);
-        setSuccess('Successfully timed in!');
+        setSuccess('Time-in record submitted.');
       }
       setSelectedEmployeeId('');
       setPhoto(null);
@@ -64,22 +64,22 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
   return (
     <div className="p-6 h-full flex flex-col">
       <div className="flex-shrink-0 mb-4">
-        <button onClick={onBack} className="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold">&larr; Back to Home</button>
-        <h2 className="text-2xl font-bold text-center mt-2 text-gray-800 dark:text-white">⏰ Time In / Time Out</h2>
-        <p className="text-center text-gray-500 dark:text-gray-400">Branch: {branch.name}</p>
+        <button onClick={onBack} className="text-cyan-400 hover:text-cyan-200 font-semibold uppercase tracking-wider">&lt; Back to Main</button>
+        <h2 className="text-2xl font-bold text-center mt-2 text-white uppercase tracking-widest">Time In / Time Out</h2>
+        <p className="text-center text-gray-400">Branch: {branch.name}</p>
       </div>
       <div className="flex-grow overflow-y-auto">
         <div className="space-y-6">
           <CameraCapture onCapture={setPhoto} onClear={() => setPhoto(null)} />
           
           <div>
-            <label htmlFor="employee" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Your Name</label>
+            <label htmlFor="employee" className="block text-sm font-medium text-gray-300 uppercase tracking-wider">Select Your Identity</label>
             {isFetchingEmployees ? <div className="mt-2"><LoadingSpinner/></div> : (
                 <select
                 id="employee"
                 value={selectedEmployeeId}
                 onChange={(e) => setSelectedEmployeeId(e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 bg-slate-800 border-2 border-slate-600 rounded-none focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-white"
                 >
                 <option value="" disabled>-- Please select --</option>
                 {employees.map((emp) => (
@@ -89,15 +89,15 @@ const TimeClock: React.FC<Props> = ({ branch, onBack }) => {
             )}
           </div>
           
-          {error && <p className="text-red-500 text-sm text-center font-semibold">{error}</p>}
-          {success && <p className="text-green-500 text-sm text-center font-semibold">{success}</p>}
+          {error && <p className="text-red-400 text-sm text-center font-semibold uppercase">{error}</p>}
+          {success && <p className="text-green-400 text-sm text-center font-semibold uppercase">{success}</p>}
           
           <button
             onClick={handleSubmit}
             disabled={!selectedEmployeeId || !photo || loading}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:from-gray-400 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
+            className="w-full flex justify-center py-3 px-4 border-2 border-cyan-500 rounded-none text-lg font-bold text-white uppercase tracking-wider bg-cyan-600/80 hover:bg-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 disabled:bg-gray-700 disabled:border-gray-600 disabled:cursor-not-allowed transition-all"
           >
-            {loading ? <LoadingSpinner /> : 'Submit'}
+            {loading ? <LoadingSpinner /> : 'Submit Record'}
           </button>
         </div>
       </div>

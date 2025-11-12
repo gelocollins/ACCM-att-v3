@@ -8,33 +8,31 @@ import PasswordPrompt from './components/PasswordPrompt';
 
 const Home = ({ onNavigate, branch }: { onNavigate: (view: AppView) => void, branch: Branch }) => (
   <div className="p-6 flex flex-col items-center justify-center h-full text-center">
-    <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white tracking-tight">Welcome to ACCM</h1>
-    <p className="text-gray-500 dark:text-gray-400 mt-2 mb-10">Branch: <span className="font-semibold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-1 rounded-md">{branch.name}</span></p>
+    <h1 className="text-5xl font-bold text-cyan-300 uppercase tracking-widest neon-glow-cyan">ACCM</h1>
+    <h2 className="text-2xl text-gray-300 font-light tracking-[0.2em] mb-1">ATTENDANCE SYSTEM</h2>
+    <p className="text-gray-400 mt-2 mb-10">Branch: <span className="font-semibold bg-cyan-900/50 text-cyan-300 px-3 py-1 border border-cyan-500/30 rounded-md">{branch.name}</span></p>
     
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
        <button 
         onClick={() => onNavigate('REGISTER')} 
-        className="fade-in-up bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl text-lg flex items-center justify-center gap-2"
+        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20"
         style={{ animationDelay: '100ms' }}
       >
-        <span>👤</span>
-        <span>Register</span>
+        <span className="btn-glitch group-hover:text-cyan-300">Register Identity</span>
       </button>
       <button 
         onClick={() => onNavigate('TIME_CLOCK')} 
-        className="fade-in-up bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl text-lg flex items-center justify-center gap-2"
+        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20"
         style={{ animationDelay: '200ms' }}
       >
-        <span>⏰</span>
-        <span>Time In/Out</span>
+         <span className="btn-glitch group-hover:text-cyan-300">Clock In / Out</span>
       </button>
       <button 
         onClick={() => onNavigate('ADMIN')} 
-        className="fade-in-up bg-gradient-to-r from-purple-500 to-violet-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 hover:shadow-xl col-span-1 sm:col-span-2 text-lg flex items-center justify-center gap-2"
+        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-magenta-600/80 border-2 border-magenta-500 rounded-none col-span-1 sm:col-span-2 transition-all duration-300 hover:bg-magenta-500/40"
         style={{ animationDelay: '300ms' }}
       >
-        <span>📊</span>
-        <span>Admin View</span>
+        <span className="btn-glitch group-hover:text-magenta-300">Admin Dashboard</span>
       </button>
     </div>
   </div>
@@ -91,16 +89,16 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col">
-      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-gray-800 dark:text-white">🏢 ACCM Attendance</h1>
+      <header className="bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 p-4 flex justify-between items-center sticky top-0 z-10">
+        <h1 className="text-xl font-bold text-cyan-300 uppercase tracking-widest neon-glow-cyan">ACCM ATTENDANCE</h1>
         {selectedBranch && (
-          <button onClick={reset} className="text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-1 px-3 rounded-lg transition-colors">
-            Change Branch
+          <button onClick={reset} className="text-sm bg-slate-700 hover:bg-slate-600 border border-slate-500 text-gray-300 font-semibold py-1 px-3 rounded-none transition-colors">
+            [ Switch Branch ]
           </button>
         )}
       </header>
       <main className="flex-grow container mx-auto p-4 sm:p-6">
-        <div className="bg-white dark:bg-gray-800/90 rounded-2xl shadow-2xl h-full overflow-hidden backdrop-blur-lg">
+        <div className="bg-slate-900/50 backdrop-blur-md border border-cyan-500/10 rounded-none h-full overflow-hidden">
             <div key={view} className="fade-in h-full">
               {renderContent()}
             </div>
