@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { AppView, Branch } from './types';
 import BranchSelector from './components/BranchSelector';
 import RegisterEmployee from './components/RegisterEmployee';
@@ -15,34 +15,65 @@ const Home = ({ onNavigate, branch }: { onNavigate: (view: AppView) => void, bra
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
        <button 
         onClick={() => onNavigate('REGISTER')} 
-        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20"
+        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20 col-span-1 sm:col-span-2"
         style={{ animationDelay: '100ms' }}
       >
         <span className="btn-glitch group-hover:text-cyan-300">Register Identity</span>
       </button>
       <button 
         onClick={() => onNavigate('TIME_CLOCK')} 
-        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20"
+        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-transparent border-2 border-cyan-400 rounded-none transition-all duration-300 hover:bg-cyan-400/20 col-span-1 sm:col-span-2"
         style={{ animationDelay: '200ms' }}
       >
          <span className="btn-glitch group-hover:text-cyan-300">Clock In / Out</span>
-      </button>
-      <button 
-        onClick={() => onNavigate('ADMIN')} 
-        className="fade-in-up group relative text-lg font-bold uppercase tracking-wider text-white py-4 px-6 bg-magenta-600/80 border-2 border-magenta-500 rounded-none col-span-1 sm:col-span-2 transition-all duration-300 hover:bg-magenta-500/40"
-        style={{ animationDelay: '300ms' }}
-      >
-        <span className="btn-glitch group-hover:text-magenta-300">Admin Dashboard</span>
       </button>
     </div>
   </div>
 );
 
 const App: React.FC = () => {
+  const [route, setRoute] = useState<'employee' | 'admin'>('employee');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // States for employee flow
   const [view, setView] = useState<AppView>('BRANCH_SELECT');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
-  const [isPasswordPromptVisible, setIsPasswordPromptVisible] = useState(false);
 
+  useEffect(() => {
+    if (window.location.pathname === '/admin') {
+      setRoute('admin');
+      if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
+        setIsAuthenticated(true);
+      }
+    }
+  }, []);
+
+  const handlePasswordSuccess = () => {
+    sessionStorage.setItem('isAdminAuthenticated', 'true');
+    setIsAuthenticated(true);
+  };
+  
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAdminAuthenticated');
+    setIsAuthenticated(false);
+    window.location.href = '/';
+  };
+
+  if (route === 'admin') {
+    if (isAuthenticated) {
+      return <AdminDashboard onLogout={handleLogout} />;
+    }
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#16213e] to-[#1a1a2e]">
+        <PasswordPrompt 
+          onSuccess={handlePasswordSuccess}
+          onCancel={() => window.location.href = '/'}
+        />
+      </div>
+    );
+  }
+
+  // --- Employee Flow ---
   const handleBranchSelect = useCallback((branch: Branch) => {
     setSelectedBranch(branch);
     setView('HOME');
@@ -56,16 +87,7 @@ const App: React.FC = () => {
   const goHome = useCallback(() => setView('HOME'), []);
 
   const handleNavigation = (targetView: AppView) => {
-    if (targetView === 'ADMIN') {
-      setIsPasswordPromptVisible(true);
-    } else {
-      setView(targetView);
-    }
-  };
-
-  const handlePasswordSuccess = () => {
-    setIsPasswordPromptVisible(false);
-    setView('ADMIN');
+    setView(targetView);
   };
 
   const renderContent = () => {
@@ -80,8 +102,6 @@ const App: React.FC = () => {
         return <RegisterEmployee branch={selectedBranch} onBack={goHome} />;
       case 'TIME_CLOCK':
         return <TimeClock branch={selectedBranch} onBack={goHome} />;
-      case 'ADMIN':
-        return <AdminDashboard branch={selectedBranch} onBack={goHome} />;
       default:
         return <BranchSelector onSelect={handleBranchSelect} />;
     }
@@ -104,12 +124,6 @@ const App: React.FC = () => {
             </div>
         </div>
       </main>
-      {isPasswordPromptVisible && (
-        <PasswordPrompt 
-          onSuccess={handlePasswordSuccess}
-          onCancel={() => setIsPasswordPromptVisible(false)}
-        />
-      )}
     </div>
   );
 };

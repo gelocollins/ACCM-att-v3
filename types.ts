@@ -24,4 +24,4 @@ export interface AttendanceRecord {
   };
 }
 
-export type AppView = 'BRANCH_SELECT' | 'HOME' | 'REGISTER' | 'TIME_CLOCK' | 'ADMIN';
+export type AppView = 'BRANCH_SELECT' | 'HOME' | 'REGISTER' | 'TIME_CLOCK';
