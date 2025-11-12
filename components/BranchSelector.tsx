@@ -31,8 +31,12 @@ const BranchSelector: React.FC<Props> = ({ onSelect }) => {
   if (loading) return <div className="flex justify-center items-center h-full"><LoadingSpinner /></div>;
   if (error) return <div className="flex justify-center items-center h-full text-red-500 uppercase">{error}</div>;
 
+  const handleAdminLogin = () => {
+    window.location.hash = 'admin';
+  };
+
   return (
-    <div className="p-8 flex flex-col items-center justify-center h-full">
+    <div className="p-8 flex flex-col items-center justify-center h-full relative">
       <h2 className="text-3xl font-bold mb-8 text-center text-cyan-300 uppercase tracking-widest">Select Branch</h2>
       <div className="w-full max-w-sm space-y-3">
         {branches.map((branch, index) => (
@@ -46,6 +50,12 @@ const BranchSelector: React.FC<Props> = ({ onSelect }) => {
           </button>
         ))}
       </div>
+      <button 
+        onClick={handleAdminLogin}
+        className="absolute bottom-4 right-4 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 text-gray-400 font-semibold py-1 px-3 rounded-none transition-colors uppercase tracking-wider"
+      >
+        Admin Login
+      </button>
     </div>
   );
 };

@@ -32,20 +32,21 @@ const Home = ({ onNavigate, branch }: { onNavigate: (view: AppView) => void, bra
 );
 
 const App: React.FC = () => {
-  const [route, setRoute] = useState<'employee' | 'admin'>('employee');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('isAdminAuthenticated') === 'true');
+  const [locationHash, setLocationHash] = useState(window.location.hash);
 
   // States for employee flow
   const [view, setView] = useState<AppView>('BRANCH_SELECT');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
 
   useEffect(() => {
-    if (window.location.pathname === '/admin') {
-      setRoute('admin');
-      if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
-        setIsAuthenticated(true);
-      }
-    }
+    const handleHashChange = () => {
+      setLocationHash(window.location.hash);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   const handlePasswordSuccess = () => {
@@ -56,10 +57,14 @@ const App: React.FC = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('isAdminAuthenticated');
     setIsAuthenticated(false);
-    window.location.href = '/';
+    window.location.hash = '';
   };
 
-  if (route === 'admin') {
+  const handleCancelLogin = () => {
+    window.location.hash = '';
+  };
+
+  if (locationHash === '#admin') {
     if (isAuthenticated) {
       return <AdminDashboard onLogout={handleLogout} />;
     }
@@ -67,7 +72,7 @@ const App: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#16213e] to-[#1a1a2e]">
         <PasswordPrompt 
           onSuccess={handlePasswordSuccess}
-          onCancel={() => window.location.href = '/'}
+          onCancel={handleCancelLogin}
         />
       </div>
     );
