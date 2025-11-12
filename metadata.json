@@ -1,0 +1,7 @@
+{
+  "name": "Photo Attendance System",
+  "description": "A photo-based attendance system for employees to register, clock in, and clock out using their device's camera. Admins can view daily attendance records with photo verification for each branch.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
